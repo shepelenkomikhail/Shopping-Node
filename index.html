@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo</title>
+</head>
+
+<body>
+    <h1>TODO List</h1>
+    <input type="text" id="inputField" name="inutField"></input>
+    <ul id="list">
+        <li>
+            <p>First item</p>
+            <button id="editButton">Edit</button>
+            <button id="removeButton">Remove</button>
+        </li>
+    </ul>
+    <button id="addButton">Add item</button>
+
+    <script>
+        const addButton = document.querySelector("#addButton");
+        const list = document.querySelector("#list");
+        const inputField = document.querySelector("#inputField");
+
+        addButton.addEventListener('click', () => {
+            const li = document.createElement('li');
+            li.innerHTML = `<p>${inputField.value}</p>
+                            <button>Edit</button>
+                            <button>Remove</button>`;
+            list.appendChild(li);
+            inputField.value = '';
+        })
+
+        const editButton = document.querySelector('#editButton');
+        const removeButton = document.querySelector('#removeButton');
+
+        list.addEventListener('click', (e) => {
+            if (e.target.id === 'removeButton') {
+                const li = e.target.parentElement;
+                li.remove();
+            }
+        })
+
+    </script>
+</body>
+
+</html>
