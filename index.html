@@ -20,6 +20,12 @@
     <button id="addButton">Add item</button>
 
     <script>
+        fetch('http://localhost:8000/api/list')
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error(error))
+
+
         const addButton = document.querySelector("#addButton");
         const list = document.querySelector("#list");
         const inputField = document.querySelector("#inputField");
@@ -42,6 +48,7 @@
                 li.remove();
             }
         })
+
 
     </script>
 </body>

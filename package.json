@@ -4,11 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "run": "nodemon --watch . --env-file=.env index.js"
+    "start": "nodemon --env-file=.env index.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^3.1.7"
+  },
+  "dependencies": {
+    "cors": "^2.8.5"
   }
 }

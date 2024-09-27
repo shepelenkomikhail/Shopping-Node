@@ -1,31 +1,31 @@
-require('dotenv').config();
-
 const http = require('http');
 const fs = require('fs');
 const fsProm = require('fs').promises;
-
 const PORT = process.env.PORT;
-console.log(process)
 
-//const list = JSON.parse(fs.readFileSync('./list.json', 'utf8'));
+const setCorsHeaders = (res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*'); // Разрешает запросы с любого источника
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); // Разрешает указанные методы
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); // Разрешает заголовки Content-Type
+}
 
 const writeFile = async (newData) => {
     try {
         await fsProm.writeFile('./list.json', newData);
         console.log('List is updated.')
     } catch (error) {
-        console.error(err);
+        console.error(error);
     }
 }
 
 const readFile = async () => {
     try {
-        const data = await JSON.parse(fsProm.readFile('./list.json', 'utf8'));
+        const data = await (fsProm.readFile('./list.json', 'utf8'));
         console.log('List is read.')
-        return data;
+        return JSON.parse(data);
     } catch (error) {
-        console.error(err);
-        return err;
+        console.error(error);
+        return error;
     }
 }
 
@@ -39,10 +39,15 @@ const jsonMiddleware = (req, res, next) => {
     next();
 }
 
-const getList = (req, res) => {
-    res.write(JSON.stringify(readFile()));
+const getList = async (req, res) => {
+    try {
+        const data = await readFile();
+        res.write(JSON.stringify(data));
+    } catch (error) {
+        res.write(JSON.stringify({ error: 'Could not read list.' }));
+    }
     res.end();
-}
+};
 
 const notFound = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
@@ -51,11 +56,12 @@ const notFound = (req, res) => {
 }
 
 const server = http.createServer((req, res) => {
-    logger(req, res, () => {
+    setCorsHeaders(res);
+    logger(req, res, async () => {
         if (req.url === '/api/list' && req.method === 'GET') {
-            getList();
+            await getList(req, res);
         } else {
-            notFound();
+            notFound(req, res);
         }
     })
 });
