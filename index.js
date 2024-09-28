@@ -25,7 +25,7 @@ const readFile = async () => {
         return JSON.parse(data);
     } catch (error) {
         console.error(error);
-        return error;
+        return [];
     }
 }
 
@@ -44,10 +44,25 @@ const getList = async (req, res) => {
         const data = await readFile();
         res.write(JSON.stringify(data));
     } catch (error) {
+        res.writeHead(500);
         res.write(JSON.stringify({ error: 'Could not read list.' }));
     }
     res.end();
 };
+
+const removeItem = async (req, res) => {
+    try {
+        const data = await readFile();
+        const requestedItem = JSON.parse(body).item;
+        const newData = data.filter((it) => it.item == requestedItem);
+        writeFile(newData);
+        res.write(JSON.stringify({ success: 'Successfull removing' }))
+    } catch (error) {
+        res.writeHead(500);
+        res.write(JSON.stringify({ error: 'Couldnt remove item' }))
+    }
+    res.end();
+}
 
 const notFound = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
@@ -60,6 +75,8 @@ const server = http.createServer((req, res) => {
     logger(req, res, async () => {
         if (req.url === '/api/list' && req.method === 'GET') {
             await getList(req, res);
+        } else if ((req.url === '/api/list' && req.method === 'POST')) {
+            await removeItem(req, res);
         } else {
             notFound(req, res);
         }

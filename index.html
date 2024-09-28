@@ -10,25 +10,46 @@
 <body>
     <h1>TODO List</h1>
     <input type="text" id="inputField" name="inutField"></input>
-    <ul id="list">
-        <li>
-            <p>First item</p>
-            <button id="editButton">Edit</button>
-            <button id="removeButton">Remove</button>
-        </li>
-    </ul>
+    <ul id="list"></ul>
     <button id="addButton">Add item</button>
 
     <script>
+        let dataVar;
         fetch('http://localhost:8000/api/list')
             .then(response => response.json())
-            .then(data => console.log(data))
+            .then(data => { console.log(data); generateList(data); })
             .catch(error => console.error(error))
 
 
         const addButton = document.querySelector("#addButton");
         const list = document.querySelector("#list");
         const inputField = document.querySelector("#inputField");
+
+        const generateList = (data) => {
+
+            data.forEach((i, index) => {
+                const fragment = document.createElement('div');
+                const p = document.createElement('p');
+                p.textContent = i.item;
+
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Edit';
+                editButton.setAttribute('id', 'editButton');
+
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Remove';
+                removeButton.setAttribute('id', 'removeButton');
+
+                fragment.appendChild(p);
+                fragment.appendChild(editButton);
+                fragment.appendChild(removeButton);
+
+                const li = document.createElement('li');
+                li.innerHTML = fragment.innerHTML;
+
+                list.appendChild(li);
+            });
+        };
 
         addButton.addEventListener('click', () => {
             const li = document.createElement('li');
@@ -43,12 +64,22 @@
         const removeButton = document.querySelector('#removeButton');
 
         list.addEventListener('click', (e) => {
-            if (e.target.id === 'removeButton') {
+            if (e.target.id == 'removeButton') {
                 const li = e.target.parentElement;
-                li.remove();
+                const item = li.querySelector('p').innerText;
+
+                fetch('http://localhost:8000/api/list', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ item: item })
+                })
+                    .then(responce => responce.json())
+                    .then(data => { console.log('Successfull removing ', data), li.remove(); })
+                    .catch(error => console.error('Error while removing', error))
             }
         })
-
 
     </script>
 </body>
