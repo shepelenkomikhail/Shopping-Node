@@ -52,11 +52,24 @@ const getList = async (req, res) => {
 
 const removeItem = async (req, res) => {
     try {
-        const data = await readFile();
-        const requestedItem = JSON.parse(body).item;
-        const newData = data.filter((it) => it.item == requestedItem);
-        writeFile(newData);
-        res.write(JSON.stringify({ success: 'Successfull removing' }))
+        let body = ''
+        req.on('data', (chunk) => {
+            body = chunk.toString();
+        })
+        req.on('end', async () => {
+            const delItem = JSON.parse(body);
+            const data = await readFile();
+            console.log((data))
+            console.log(delItem.item)
+            const newData = data.filter(x => x.item !== delItem.item);
+            newData.forEach((item, index) => {
+                item.id = index + 1;
+            });
+            await writeFile(JSON.stringify(newData));
+            res.statusCode = 201;
+            res.write(JSON.stringify({ message: 'Success' }))
+            res.end();
+        })
     } catch (error) {
         res.writeHead(500);
         res.write(JSON.stringify({ error: 'Couldnt remove item' }))

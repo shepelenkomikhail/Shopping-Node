@@ -1,42 +1,18 @@
 [
     {
         "id": 1,
-        "item": "bread"
-    },
-    {
-        "id": 2,
-        "item": "lemon"
-    },
-    {
-        "id": 3,
-        "item": "milk"
-    },
-    {
-        "id": 4,
-        "item": "eggs"
-    },
-    {
-        "id": 5,
         "item": "butter"
     },
     {
-        "id": 6,
+        "id": 2,
         "item": "cheese"
     },
     {
-        "id": 7,
+        "id": 3,
         "item": "tomato"
     },
     {
-        "id": 8,
+        "id": 4,
         "item": "apple"
-    },
-    {
-        "id": 9,
-        "item": "banana"
-    },
-    {
-        "id": 10,
-        "item": "orange"
     }
 ]
