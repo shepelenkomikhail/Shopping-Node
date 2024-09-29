@@ -7,11 +7,23 @@
     <title>Todo</title>
 </head>
 
-<body>
-    <h1>TODO List</h1>
-    <input type="text" id="inputField" name="inutField"></input>
-    <ul id="list"></ul>
-    <button id="addButton">Add item</button>
+<body style="width: 50vw; 
+             height: auto; 
+             border: 5px solid black; 
+             padding: 1%;
+             display: flex;
+             justify-content: center;">
+
+    <div style="display: flex; 
+                flex-direction: column; 
+                justify-content: center;">
+
+        <h1>Shopping List</h1>
+        <input type=" text" id="inputField" name="inutField"></input>
+        <ul id="list"></ul>
+        <button id="addButton" style="margin-top: 10%;">Add item</button>
+    </div>
+
 
     <script>
         let dataVar;
@@ -20,13 +32,13 @@
             .then(data => { console.log(data); generateList(data); })
             .catch(error => console.error(error))
 
-
         const addButton = document.querySelector("#addButton");
         const list = document.querySelector("#list");
         const inputField = document.querySelector("#inputField");
+        const editButton = document.querySelector('#editButton');
+        const removeButton = document.querySelector('#removeButton');
 
         const generateList = (data) => {
-
             data.forEach((i, index) => {
                 const fragment = document.createElement('div');
                 const p = document.createElement('p');
@@ -52,35 +64,77 @@
         };
 
         addButton.addEventListener('click', () => {
-            const li = document.createElement('li');
-            li.innerHTML = `<p>${inputField.value}</p>
-                            <button>Edit</button>
-                            <button>Remove</button>`;
-            list.appendChild(li);
-            inputField.value = '';
+            fetch('http://localhost:8000/api/list', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ item: inputField.value })
+            })
+                .then(responce => responce.json())
+                .then(data => {
+                    console.log('Front: successfull adding ', data);
+                    const li = document.createElement('li');
+                    li.innerHTML = `<p>${inputField.value}</p>
+                                    <button>Edit</button>
+                                    <button>Remove</button>`;
+                    list.appendChild(li);
+                    inputField.value = '';
+                })
+                .catch(error => console.error('Front: error while adding ', error))
         })
 
-        const editButton = document.querySelector('#editButton');
-        const removeButton = document.querySelector('#removeButton');
-
         list.addEventListener('click', (e) => {
+            const li = e.target.parentElement;
+            const item = li.querySelector('p').innerText;
+
             if (e.target.id == 'removeButton') {
-                const li = e.target.parentElement;
-                const item = li.querySelector('p').innerText;
 
                 fetch('http://localhost:8000/api/list', {
-                    method: 'POST',
+                    method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({ item: item })
                 })
                     .then(responce => responce.json())
-                    .then(data => { console.log('Successfull removing ', data), li.remove(); })
-                    .catch(error => console.error('Error while removing ', error))
+                    .then(data => { console.log('Front: successfull removing ', data), li.remove(); })
+                    .catch(error => console.error('Front: error while removing ', error))
+
+            } else if (e.target.id == 'editButton') {
+                const input = document.createElement('input');
+                const submit = document.createElement('button');
+                const p = document.createElement('p');
+
+                p.innerHTML = "Enter a new name for item";
+                submit.innerHTML = "Submit";
+
+                e.target.parentElement.appendChild(p);
+                e.target.parentElement.appendChild(input);
+                e.target.parentElement.appendChild(submit);
+
+                submit.addEventListener('click', (e) => {
+                    const oldItem = item;
+                    const newItem = input.value;
+
+                    fetch('http://localhost:8000/api/list', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ item: newItem, oldItem: oldItem })
+                    })
+                        .then(responce => responce.json())
+                        .then(data => {
+                            console.log('Front: successfull editing ', data);
+                            e.target.parentElement.removeChild(p);
+                            e.target.parentElement.removeChild(input);
+                            e.target.parentElement.removeChild(submit);
+                        })
+                        .catch(error => console.error('Front: error while editing ', error))
+                })
             }
         })
-
     </script>
 </body>
 

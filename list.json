@@ -1,18 +1,1 @@
-[
-    {
-        "id": 1,
-        "item": "butter"
-    },
-    {
-        "id": 2,
-        "item": "cheese"
-    },
-    {
-        "id": 3,
-        "item": "tomato"
-    },
-    {
-        "id": 4,
-        "item": "apple"
-    }
-]
+[{"id":1,"item":"tomato"},{"id":2,"item":"milk"},{"id":3,"item":"jam"},{"id":4,"item":"bread"},{"id":5,"item":"laptop"},{"id":6,"item":"eggs"}]
