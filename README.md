@@ -1,4 +1,4 @@
-# Todo-Node
+# Shopping-Node
 
 Simple backend application written in plain Node.js.
 
