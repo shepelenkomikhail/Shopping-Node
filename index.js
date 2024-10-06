@@ -4,9 +4,9 @@ const fsProm = require('fs').promises;
 const PORT = process.env.PORT;
 
 const setCorsHeaders = (res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*'); // Разрешает запросы с любого источника
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, DELETE, PUT'); // Разрешает указанные методы
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); // Разрешает заголовки Content-Type
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, DELETE, PUT');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 }
 
 const logger = (req, res, next) => {
